@@ -4,7 +4,7 @@ Cloud functions that update firestore database with the latest FIRST® Robotics 
 Updating the database can take ~20 minutes because of the amount of requests (with a 3 second delay) that must be made to the FIRST® events API.
 
 Therefore it is best to split up the task into several functions since each has a timeout of 9 minutes in google cloud. 
-The first function is triggered by an http endpoint and the later three are chained using pubsub messages.
+The first function is triggered by an http endpoint and the latter three are chained using pubsub messages.
 
 It is highly advised to test functions using an emulator:
 
