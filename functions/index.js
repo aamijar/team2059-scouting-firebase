@@ -330,19 +330,23 @@ function getChampionshipAvatars(tempChampionshipObject){
       if (this.readyState === 4) {
         console.log('Status:', this.status);
         
-        var output = JSON.parse(this.responseText);
-        var avatarArrayJSON = output.teams;
-
-
-        for(let i = 0; i < avatarArrayJSON.length; i ++){
-          for(let j =0; j < teamNames.length; j ++){
-            if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
-              teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+        if(this.status === 500){
+          teamNames = fillAvatarsNone(teamNames)
+        }
+        else{
+          var output = JSON.parse(this.responseText);
+          var avatarArrayJSON = output.teams;
+  
+  
+          for(let i = 0; i < avatarArrayJSON.length; i ++){
+            for(let j =0; j < teamNames.length; j ++){
+              if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
+                teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+              }
             }
           }
         }
         
-
         admin.firestore().collection(rootCollection).doc('championships').collection('teams').doc(code).set({"teams": teamNames});
         resolve(code + " > teams list fetched!");
 
@@ -479,18 +483,29 @@ function getRegionalAvatars(tempRegionalObject){
     request.onload = function () {
       if (this.readyState === 4) {
         console.log('Status:', this.status, code);
-        
-        var output = JSON.parse(this.responseText);
-        var avatarArrayJSON = output.teams;
+        var output;
 
+        if(this.status === 500) {
+            // output = '{"teams":[]}';
+            // output = JSON.parse(output);
+            teamNames = fillAvatarsNone(teamNames)
 
-        for(let i = 0; i < avatarArrayJSON.length; i ++){
-          for(let j =0; j < teamNames.length; j ++){
-            if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
-              teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
-            }
-          }
         }
+        else{
+            output = JSON.parse(this.responseText);
+
+            var avatarArrayJSON = output.teams;
+
+            for(let i = 0; i < avatarArrayJSON.length; i ++){
+              for(let j =0; j < teamNames.length; j ++){
+                if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
+                  teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+                }
+              }
+            }
+        }
+        
+        
         
 
         admin.firestore().collection(rootCollection).doc('regionals').collection('teams').doc(code).set({"teams": teamNames});
@@ -701,19 +716,25 @@ function getDistrictAvatars(eventObject){
       if (this.readyState === 4) {
         console.log('Status:', this.status, districtCode, eventCode);
         
-        var output = JSON.parse(this.responseText);
-        var avatarArrayJSON = output.teams;
 
-
-        for(let i = 0; i < avatarArrayJSON.length; i ++){
-          for(let j =0; j < teamNames.length; j ++){
-            if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
-              teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+        if(this.status === 500){
+          teamNames = fillAvatarsNone(teamNames)
+        }
+        else{
+          var output = JSON.parse(this.responseText);
+          var avatarArrayJSON = output.teams;
+  
+  
+          for(let i = 0; i < avatarArrayJSON.length; i ++){
+            for(let j =0; j < teamNames.length; j ++){
+              if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
+                teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+              }
             }
           }
         }
         
-
+        
         admin.firestore().collection(rootCollection).doc('districts').collection('district events').doc(districtCode).collection('teams').doc(eventCode).set({"teams": teamNames})
         resolve(eventCode + " " + districtCode + " > team list fetched!");
 
@@ -761,5 +782,12 @@ async function getData(){
 // });
 
 
-
+function fillAvatarsNone(teamNames){
+  
+  for(let i = 0; i < teamNames.length; i ++){
+    teamNames[i].avatar = ""
+  }
+  
+  return teamNames
+}
 
