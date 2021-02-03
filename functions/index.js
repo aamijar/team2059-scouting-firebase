@@ -25,7 +25,10 @@ const constants = require('./constants');
 const user = constants.user;
 const pass = constants.pass;
 
-const baseURL = 'https://frc-api.firstinspires.org/v2.0/2020/';
+const baseURL = 'https://frc-api.firstinspires.org/v2.0/2021/';
+
+const rootCollection = "2021_data"
+
 
 //setup
 admin.initializeApp();
@@ -58,8 +61,8 @@ exports.updateFirestore = functions.runWith(runtimeOpts).https.onRequest((reques
 
   }).then((finalResult) => {
     console.log(finalResult);
-    return pubSubClient.topic('districtStart').publishJSON({"district": "start"});
-    //return pubSubClient.topic('regionalStart').publishJSON({"regional": "start"});
+    //return pubSubClient.topic('districtStart').publishJSON({"district": "start"});
+    return pubSubClient.topic('regionalStart').publishJSON({"regional": "start"});
     //return pubSubClient.topic('districtOverflow').publishJSON([{"name": "myname", "number": 0}, {"name": "myname2", "number": 2}]);
     
   }).then((pubsubMessage) => {
@@ -230,7 +233,7 @@ function getChampionships(){
             }   
         }
 
-        admin.firestore().collection("cloud functions").doc('championships').set({"championshipCodes": championshipArray});
+        admin.firestore().collection(rootCollection).doc('championships').set({"championshipCodes": championshipArray});
         
         resolve(championshipArray);
         
@@ -327,20 +330,24 @@ function getChampionshipAvatars(tempChampionshipObject){
       if (this.readyState === 4) {
         console.log('Status:', this.status);
         
-        var output = JSON.parse(this.responseText);
-        var avatarArrayJSON = output.teams;
-
-
-        for(let i = 0; i < avatarArrayJSON.length; i ++){
-          for(let j =0; j < teamNames.length; j ++){
-            if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
-              teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+        if(this.status === 500){
+          teamNames = fillAvatarsNone(teamNames)
+        }
+        else{
+          var output = JSON.parse(this.responseText);
+          var avatarArrayJSON = output.teams;
+  
+  
+          for(let i = 0; i < avatarArrayJSON.length; i ++){
+            for(let j =0; j < teamNames.length; j ++){
+              if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
+                teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+              }
             }
           }
         }
         
-
-        admin.firestore().collection('cloud functions').doc('championships').collection('teams').doc(code).set({"teams": teamNames});
+        admin.firestore().collection(rootCollection).doc('championships').collection('teams').doc(code).set({"teams": teamNames});
         resolve(code + " > teams list fetched!");
 
       }
@@ -391,7 +398,7 @@ function getRegionals(){
             }   
         }
 
-        admin.firestore().collection("cloud functions").doc('regionals').set({"regionalCodes": regionalArray});
+        admin.firestore().collection(rootCollection).doc('regionals').set({"regionalCodes": regionalArray});
         
 
         resolve(regionalArray);
@@ -476,21 +483,32 @@ function getRegionalAvatars(tempRegionalObject){
     request.onload = function () {
       if (this.readyState === 4) {
         console.log('Status:', this.status, code);
-        
-        var output = JSON.parse(this.responseText);
-        var avatarArrayJSON = output.teams;
+        var output;
 
+        if(this.status === 500) {
+            // output = '{"teams":[]}';
+            // output = JSON.parse(output);
+            teamNames = fillAvatarsNone(teamNames)
 
-        for(let i = 0; i < avatarArrayJSON.length; i ++){
-          for(let j =0; j < teamNames.length; j ++){
-            if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
-              teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+        }
+        else{
+            output = JSON.parse(this.responseText);
+
+            var avatarArrayJSON = output.teams;
+
+            for(let i = 0; i < avatarArrayJSON.length; i ++){
+              for(let j =0; j < teamNames.length; j ++){
+                if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
+                  teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+                }
+              }
             }
-          }
         }
         
+        
+        
 
-        admin.firestore().collection('cloud functions').doc('regionals').collection('teams').doc(code).set({"teams": teamNames});
+        admin.firestore().collection(rootCollection).doc('regionals').collection('teams').doc(code).set({"teams": teamNames});
         resolve(code + " > teams list fetched!");
 
       }
@@ -540,7 +558,7 @@ function getDistricts(){
 
         
         
-        admin.firestore().collection('cloud functions').doc('districts').set({"districtCodes": districtArray});
+        admin.firestore().collection(rootCollection).doc('districts').set({"districtCodes": districtArray});
         
 
         resolve(districtArray);
@@ -599,7 +617,7 @@ function getDistrictEvents(districtCode){
         tempEventObject.events = eventsArray;
         
         
-        admin.firestore().collection('cloud functions').doc('districts').collection('district events').doc(districtCode).set({"district event": eventsArray})
+        admin.firestore().collection(rootCollection).doc('districts').collection('district events').doc(districtCode).set({"district event": eventsArray})
         
         
         resolve(tempEventObject);
@@ -698,20 +716,26 @@ function getDistrictAvatars(eventObject){
       if (this.readyState === 4) {
         console.log('Status:', this.status, districtCode, eventCode);
         
-        var output = JSON.parse(this.responseText);
-        var avatarArrayJSON = output.teams;
 
-
-        for(let i = 0; i < avatarArrayJSON.length; i ++){
-          for(let j =0; j < teamNames.length; j ++){
-            if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
-              teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+        if(this.status === 500){
+          teamNames = fillAvatarsNone(teamNames)
+        }
+        else{
+          var output = JSON.parse(this.responseText);
+          var avatarArrayJSON = output.teams;
+  
+  
+          for(let i = 0; i < avatarArrayJSON.length; i ++){
+            for(let j =0; j < teamNames.length; j ++){
+              if(avatarArrayJSON[i].teamNumber === teamNames[j].number){
+                teamNames[j].avatar = avatarArrayJSON[i].encodedAvatar;
+              }
             }
           }
         }
         
-
-        admin.firestore().collection('cloud functions').doc('districts').collection('district events').doc(districtCode).collection('teams').doc(eventCode).set({"teams": teamNames})
+        
+        admin.firestore().collection(rootCollection).doc('districts').collection('district events').doc(districtCode).collection('teams').doc(eventCode).set({"teams": teamNames})
         resolve(eventCode + " " + districtCode + " > team list fetched!");
 
       }
@@ -740,7 +764,7 @@ function simpleTest(){
 
 /* test function for getting data from firestore */
 async function getData(){
-  const regionalRef = admin.firestore().collection('cloud functions').doc('regionals');
+  const regionalRef = admin.firestore().collection(rootCollection).doc('regionals');
   const doc = await regionalRef.get();
   if (!doc.exists) {
     console.log('No such document!');
@@ -758,5 +782,12 @@ async function getData(){
 // });
 
 
-
+function fillAvatarsNone(teamNames){
+  
+  for(let i = 0; i < teamNames.length; i ++){
+    teamNames[i].avatar = ""
+  }
+  
+  return teamNames
+}
 
