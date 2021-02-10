@@ -16,6 +16,6 @@ jobs:
           node-version: 10
       
       - name: Mocha Tests
-        working_directory: ./functions
+        working-directory: ./functions
         run: npm test
 
