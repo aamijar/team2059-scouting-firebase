@@ -1,4 +1,6 @@
 # team2059-scouting-firebase
+<img alt= Node.js Testing src= https://github.com/aamijar/team2059-scouting-firebase/workflows/Node.js%20Testing/badge.svg>
+
 Cloud functions that update firestore database with the latest FIRST® Robotics Competition events, teams, and avatars
 
 Updating the database can take ~20 minutes because of the amount of requests (with a 3 second delay) that must be made to the FIRST® events API.
