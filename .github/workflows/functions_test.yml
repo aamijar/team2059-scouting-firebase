@@ -17,8 +17,8 @@ jobs:
       
       - name: Install Mocha
         working-directory: ./functions
-        run: npm install --save-dev firebase-functions-test
-        run: npm install --save-dev mocha
+      - run: npm install --save-dev firebase-functions-test
+      - run: npm install --save-dev mocha
 
       - name: Mocha Tests
         working-directory: ./functions
