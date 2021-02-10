@@ -69,3 +69,5 @@ functions/constants.js
 
 functions/.eslintrc.json
 .DS_Store
+
+functions/package-lock.json
