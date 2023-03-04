@@ -25,9 +25,9 @@ const constants = require('./constants');
 const user = constants.user;
 const pass = constants.pass;
 
-const baseURL = 'https://frc-api.firstinspires.org/v2.0/2021/';
+const baseURL = 'https://frc-api.firstinspires.org/v2.0/2023/';
 
-const rootCollection = "2021_data"
+const rootCollection = "cloud functions"
 
 
 //setup
@@ -792,12 +792,12 @@ function fillAvatarsNone(teamNames){
 }
 
 
-function add(num1, num2){
-  return num1 + num2;
-}
+// function add(num1, num2){
+//   return num1 + num2;
+// }
 
-function multiply(num1, num2){
-  return num1 * num2;
-}
+// function multiply(num1, num2){
+//   return num1 * num2;
+// }
 
-module.exports = {add: add, multiply: multiply}
+// module.exports = {add: add, multiply: multiply}
