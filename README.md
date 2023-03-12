@@ -1,8 +1,5 @@
 # team2059-scouting-firebase
-<a href="https://github.com/aamijar/team2059-scouting-firebase/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/aamijar/team2059-scouting-firebase/Node.js%20Testing?label=build&logo=github"></a>
-<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/aamijar/team2059-scouting-firebase/Node.js%20Testing?color=ab5c2b&label=tests&logo=Mocha&logoColor=white">
-<img alt="Node.js 10" src="https://img.shields.io/badge/Node.js-10-green?logo=Node.js&logoColor=green">
-<img alt="Node.js 10" src="https://img.shields.io/badge/cloud%20functions-3.6.1-%23f29c07?logo=firebase">
+<img alt="Node.js 10" src="https://img.shields.io/badge/Node.js-10-green?logo=Node.js&logoColor=green"> <img alt="Node.js 10" src="https://img.shields.io/badge/cloud%20functions-3.6.1-%23f29c07?logo=firebase">
 
 
 Cloud functions that update firestore database with the latest FIRST® Robotics Competition events, teams, and avatars
